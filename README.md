@@ -2,47 +2,107 @@
 <img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/b9b5e72c-f651-481a-9e4c-2d9b9712fc06" />
 " />
 
-# Project Overview
-This project applies sentiment analysis and logistic regression to consumer financial complaints data, predicting dispute likelihood based on emotional indicators in complaint narratives.
+--- 
+## 🌟 Project Overview
 
-Access to dashboard: https://app.powerbi.com/view?r=eyJrIjoiNGQ1ODNmZDYtODgxMS00YWM4LTk3NDMtMzQ5MTI3MDYzZjQzIiwidCI6ImRiMjMwNmZkLWFmMjUtNGUyOS05Y2NiLWJmMjg2YWY2MjFjMCJ9
+This project analyzes more than **1 million consumer financial complaints** from the **Consumer Financial Protection Bureau (CFPB)** and then zooms in on **JPMorgan**.
 
-# Data Cleaning With Excel Power Query
+The workflow has **three main steps**:
 
-- Column Standardization: Used Power Query Editor to rename and format columns
+1. **Big-picture analysis (all companies) with Power BI**  
 
-- Missing Value Treatment: Applied strategic fill methods for different data types
+2. **Deep-dive into JPMorgan complaints with Python**   
 
-- Categorical Mapping: Standardized response categories and consent indicators
+3. **Sentiment-based dispute prediction model**  
 
-- Export Preparation: Generated clean dataset for Python analysis
+This project shows how **visual analytics + NLP + machine learning** can turn raw complaint data into useful business insights.
 
-# Sentiment Analysis
+---
 
-- TextBlob Library: Extracted polarity and subjectivity scores
-  
-- Emotion Detection: Custom algorithms for anger and trust indicators
-  
-- Score Normalization: Scaled emotion scores to 0-1 range
+## 📊 Power BI Dashboard
 
-# Statistical Modeling
+👉 **Live dashboard (all companies):**  
+https://app.powerbi.com/view?r=eyJrIjoiNGQ1ODNmZDYtODgxMS00YWM4LTk3NDMtMzQ5MTI3MDYzZjQzIiwidCI6ImRiMjMwNmZkLWFmMjUtNGUyOS05Y2NiLWJmMjg2YWY2MjFjMCJ9
 
-- Logistic Regression: Binary classification for dispute prediction
-  
-- Feature Selection: Sentiment polarity, anger score, trust score
-  
-- Model Validation: Train-test split with performance evaluation
+---
+## 🧷 Data
 
-# Load and analyze data
-    import pandas as pd
-    from textblob import TextBlob
-    from sklearn.linear_model import LogisticRegression
+### Big Picture – All Companies
 
-# Run analysis
-df = pd.read_excel('cleaned_complaints.xlsx')
+For the high-level, industry-wide analysis in Power BI, I used data downloaded directly from the official CFPB complaint portal:
+
+🔗 https://www.consumerfinance.gov/data-research/consumer-complaints/
+
+From this site, I exported the full consumer complaint dataset (all companies, all products) as CSV and loaded it into Power BI to explore
+
+### Deep Dive – JPMorgan Complaints
+
+For the second step, I focused specifically on **JPMorgan**.
+
+🔗 JPMorgan CSV API link (used in this project): https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/?date_received_max=2025-10-02&date_received_min=2011-12-01&field=company&format=csv&no_aggs=true&search_term=jpmorgan&size=149956 
+
+From this CSV: 
+
+- I cleaned and standardized the data in Excel (Power Query). 
+
+- Then used this cleaned dataset for sentiment analysis and logistic regression modeling.
+
+--- 
+## 📈 Results & Findings
+
+### ⭐ 1. JPMorgan Complaint Analysis
+
+ **Overall Complaint Characteristics**
+- Complaints span **2011–2025**, covering a wide range of financial products.
+- JPMorgan receives almost **150,000 of complaints**, making it one of the most frequently reported banks.
+
+ **Products with the Most Complaints**
+ 
+Top product categories for JPMorgan include:
+
+1. **Checking or Savings Accounts**  
+2. **Mortgage Issues**  
+3. **Credit Cards**  
+4. **Bank Account Services**  
+5. **Credit Card / Prepaid Card**
+
+➡ Checking/savings and mortgage issues drive the majority of complaints.
+
+### **Top Sub-Issues**
+Common problem areas include:
+
+- Problems with **deposits and withdrawals**
+- **Account closures** initiated by the company
+- **Unresolved credit card disputes**
+- **Unauthorized transactions**
+- **Debit/ATM card issues**
+
+These issues point to **transaction errors, account access problems, and dispute handling** as core pain points.
+
+### **State-Level Complaint Hotspots**
+JPMorgan complaints are concentrated in:
+
+- **California**  
+- **New York**  
+- **Florida**  
+- **Texas**  
+- **Illinois**
+
+ <img width="1094" height="450" alt="image" src="https://github.com/user-attachments/assets/d9e07fed-284e-4b0f-87fa-85cfe78c009a" />
 
 
-# Statistical Results
+These states also have the highest JPMorgan customer bases, but California stands out with especially high volume.
+
+### **Response Types & Timeliness**
+- Most complaints are closed **“with explanation.”**
+- Only a small percentage receive **monetary or non-monetary relief**.
+- JPMorgan responds **on time** for the majority of cases.
+- However, some customers still **dispute** the company’s response, indicating unresolved concerns.
+
+---
+## ⭐ 3. Statistical Modeling – Logistic Regression
+
+### Statistical Results
                          Logistic Regression Coefficients
 | Feature | Coefficients | P-value  | Interpretation
 | ------- | ------- |------- |------- |
@@ -50,47 +110,7 @@ df = pd.read_excel('cleaned_complaints.xlsx')
 | Trust Score | +0.043 | < 0.05 | Higher Trust -> Lower dispute probability |
 | Sentiment Polarity | +0. 104 | < 0.1 | Positive sentiment -> Higher engagement |
 
-Code
-    SIMPLE LOGISTIC REGRESSION
-    features = ['sentiment_polarity', 'anger_score', 'trust_score']
-     if 'sentiment_subjectivity' in df_text.columns:
-    features.append('sentiment_subjectivity')
-
-    df_model = df_text[features + ['dispute_binary']].dropna()
-
-    if len(df_model) >= 10:  
-    X = df_model[features]
-    y = df_model['dispute_binary']
-    
-    # Split data
-    if len(df_model) > 20:
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-    else:
-        X_train, X_test, y_train, y_test = X, X, y, y  
-    
-    # Train model
-    model = LogisticRegression(random_state=42, max_iter=1000)
-    model.fit(X_train, y_train)
-    
-    # Make predictions
-    accuracy = model.score(X_test, y_test)
-    
-   
-    print("KEY PREDICTORS (Feature Importance):")
-    feature_importance = list(zip(features, model.coef_[0]))
-    feature_importance.sort(key=lambda x: abs(x[1]), reverse=True)
-    
-    for feature, coef in feature_importance:
-        direction = "INCREASES" if coef > 0 else "DECREASES"
-        significance = "***" if abs(coef) > 0.5 else ("**" if abs(coef) > 0.2 else "*")
-        print(f"   • {feature}: {coef:+.3f} {significance}")
-        print(f"     → {direction} dispute probability")
-
 # Key Results
-
-- Dataset: 1,048,575 total complaints analyzed
-
-- Text Analysis: 240,881 complaints with narratives
 
 - Model Accuracy: 99.1% dispute prediction accuracy
 
@@ -111,8 +131,10 @@ Code
 - Debt collection (10.3%)
   
 - Banking services (6.7%)
+  
+---
 
-# Sentiment Analysis 
+## ⭐ 4. Sentiment Analysis Results
 ### Sentiment Distribution Analysis
 
 <img width="450" height="450" alt="Screenshot 2025-08-02 at 12 22 35 AM" src="https://github.com/user-attachments/assets/0b4b2984-9c05-4fb7-be28-ae4b2cb4eb28" />
